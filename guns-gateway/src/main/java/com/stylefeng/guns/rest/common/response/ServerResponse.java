@@ -1,5 +1,7 @@
 package com.stylefeng.guns.rest.common.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.stylefeng.guns.rest.Enum.ResponseCode;
 
 /**
@@ -8,11 +10,13 @@ import com.stylefeng.guns.rest.Enum.ResponseCode;
  * @author: Zwb
  * @create: 2019-04-28 13:20
  **/
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServerResponse<T> {
     private int status;
 
     private String msg;
+
+    private String imgPre;
 
     private T data;
 
@@ -30,6 +34,14 @@ public class ServerResponse<T> {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public String getImgPre() {
+        return imgPre;
+    }
+
+    public void setImgPre(String imgPre) {
+        this.imgPre = imgPre;
     }
 
     public T getData() {
@@ -53,7 +65,14 @@ public class ServerResponse<T> {
         this.msg = msg;
     }
 
-    public ServerResponse(int status,String msg,T data){
+    public ServerResponse(int status, String msg, String imgPre, T data) {
+        this.status = status;
+        this.msg = msg;
+        this.imgPre = imgPre;
+        this.data = data;
+    }
+
+    public ServerResponse(int status, String msg, T data){
         this.status = status;
         this.msg = msg;
         this.data = data;
@@ -66,6 +85,10 @@ public class ServerResponse<T> {
 
     public static <T>ServerResponse<T> success(String msg){
         return new ServerResponse(ResponseCode.SUCCESS.getCode(),msg);
+    }
+
+    public static <T>ServerResponse<T> success(String imgPre, T data){
+        return new ServerResponse(ResponseCode.SUCCESS.getCode(),ResponseCode.SUCCESS.getMsg(),imgPre,data);
     }
 
     public static <T>ServerResponse<T> success(T data){

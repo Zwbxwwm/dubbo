@@ -49,6 +49,7 @@ public class DefaultFastjsonConfig {
                 SerializerFeature.WriteEnumUsingToString
         );
         fastJsonConfig.setDateFormat("yyyy-MM-dd HH:mm:ss");
+        //返回的Vo为空是仍然显示
         ValueFilter valueFilter = new ValueFilter() {
             public Object process(Object o, String s, Object o1) {
                 if (null == o1) {
@@ -57,8 +58,8 @@ public class DefaultFastjsonConfig {
                 return o1;
             }
         };
-        fastJsonConfig.setCharset(Charset.forName("utf-8"));
         fastJsonConfig.setSerializeFilters(valueFilter);
+        fastJsonConfig.setCharset(Charset.forName("utf-8"));
 
         //解决Long转json精度丢失的问题
         SerializeConfig serializeConfig = SerializeConfig.globalInstance;

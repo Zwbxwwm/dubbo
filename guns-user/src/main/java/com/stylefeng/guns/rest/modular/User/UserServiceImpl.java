@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 @Service(interfaceClass = IUserAPI.class)
 public class UserServiceImpl implements IUserAPI {
 
-    // todo 去掉@Autowired注解试一试
     @Autowired
     private MoocUserTMapper moocUserTMapper;
 

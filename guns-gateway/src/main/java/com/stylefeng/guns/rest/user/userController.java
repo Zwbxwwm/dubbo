@@ -27,7 +27,7 @@ public class userController {
 
     private final static Logger log = LoggerFactory.getLogger(userController.class);
 
-    @Reference(interfaceClass = IUserAPI.class)
+    @Reference(interfaceClass = IUserAPI.class,check = false)
     private IUserAPI iUserAPI;
 
     @PostMapping("register")
