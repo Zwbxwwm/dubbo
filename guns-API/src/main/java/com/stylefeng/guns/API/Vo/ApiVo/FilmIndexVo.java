@@ -1,5 +1,8 @@
-package com.stylefeng.guns.API.Vo;
+package com.stylefeng.guns.API.Vo.ApiVo;
 
+import com.stylefeng.guns.API.Vo.BannerVo;
+import com.stylefeng.guns.API.Vo.FilmInfo;
+import com.stylefeng.guns.API.Vo.FilmsVo;
 import lombok.Data;
 
 import java.io.Serializable;

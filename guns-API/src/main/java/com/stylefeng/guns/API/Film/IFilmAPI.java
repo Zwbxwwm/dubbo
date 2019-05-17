@@ -1,8 +1,6 @@
 package com.stylefeng.guns.API.Film;
 
-import com.stylefeng.guns.API.Vo.BannerVo;
-import com.stylefeng.guns.API.Vo.FilmInfo;
-import com.stylefeng.guns.API.Vo.FilmsVo;
+import com.stylefeng.guns.API.Vo.*;
 
 import java.util.List;
 
@@ -25,5 +23,13 @@ public interface IFilmAPI {
     //获取Top100
     List<FilmInfo> getTop();
 
-    //
+    //获取分类
+    List<CatVo> gtCats();
+
+    //获取片源
+    List<SourceVo> getSources();
+
+    //获取影片年代
+    List<YearVo> getYears();
+
 }
