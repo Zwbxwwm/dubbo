@@ -56,7 +56,7 @@ public class FilmServiceImpl implements  IFilmAPI{
     }
 
     @Override
-    public FilmsVo getHotFilms(boolean isLimit, int nums) {
+    public FilmsVo getHotFilms(boolean isLimit, int nums,int nowPage,int sortId,int sourceId,int yearId,int catId) {
         FilmsVo filmsVo = new FilmsVo();
         List<FilmInfo> filmInfos = new ArrayList<>();
         //查找所有热映影片
@@ -75,13 +75,33 @@ public class FilmServiceImpl implements  IFilmAPI{
             filmsVo.setFilmInfo(filmInfos);
 
         }else{
-
+            Page<MoocFilmT> filmTPage = new Page<>(nowPage,nums);
+            if(sourceId != 99){
+                moocFilmTEntityWrapper.eq("film_source",sourceId);
+            }
+            if(yearId != 99){
+                moocFilmTEntityWrapper.eq("film_date",yearId);
+            }
+            if(catId != 99){
+                String caString  = "%#"+catId+"#%";
+                moocFilmTEntityWrapper.like("film_cats",caString);
+            }
+            List<MoocFilmT> filmTS = moocFilmTMapper.selectPage(filmTPage,moocFilmTEntityWrapper);
+            for(MoocFilmT filmT:filmTS){
+                FilmInfo filmInfo = new FilmInfo();
+                filmInfo = FilmT2FilmInfo.converter(filmT);
+                filmInfos.add(filmInfo);
+            }
+            int totalCount = moocFilmTMapper.selectCount(moocFilmTEntityWrapper);
+            int totalPage = totalCount/nums +1;
+            filmsVo.setFilmNum(totalPage);
+            filmsVo.setFilmInfo(filmInfos);
         }
         return filmsVo;
     }
 
     @Override
-    public FilmsVo getSoonFilms(boolean isLimit, int nums) {
+    public FilmsVo getSoonFilms(boolean isLimit, int nums,int nowPage,int sortId,int sourceId,int yearId,int catId) {
         FilmsVo filmsVo = new FilmsVo();
         List<FilmInfo> filmInfos = new ArrayList<>();
         //查找所有热映影片
@@ -103,6 +123,11 @@ public class FilmServiceImpl implements  IFilmAPI{
 
         }
         return filmsVo;
+    }
+
+    @Override
+    public FilmsVo getClassicFilms(int nums, int nowPage, int sortId, int sourceId, int yearId, int catId) {
+        return null;
     }
 
     @Override

@@ -20,6 +20,6 @@ public class SourceVo implements Serializable {
 
     private String sourceName;
 
-    private String isActive;
+    private String isActive = "false";
 
 }

@@ -20,5 +20,5 @@ public class CatVo implements Serializable {
 
     private String catName;
 
-    private String isActive;
+    private String isActive = "false";
 }

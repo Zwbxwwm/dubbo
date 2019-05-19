@@ -20,6 +20,6 @@ public class YearVo implements Serializable {
 
     private String yearName;
 
-    private String isActive;
+    private String isActive = "false";
 
 }
