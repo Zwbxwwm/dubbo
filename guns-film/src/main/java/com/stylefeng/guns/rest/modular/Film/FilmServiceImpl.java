@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.stylefeng.guns.API.Film.IFilmAPI;
 import com.stylefeng.guns.API.Vo.*;
 
+import com.stylefeng.guns.API.Vo.ApiVo.FilmDetailVo;
 import com.stylefeng.guns.rest.common.converter.FilmT2FilmInfo;
 import com.stylefeng.guns.rest.common.persistence.dao.*;
 import com.stylefeng.guns.rest.common.persistence.model.*;
@@ -41,6 +42,13 @@ public class FilmServiceImpl implements  IFilmAPI{
     @Autowired
     private MoocYearDictTMapper moocYearDictTMapper;
 
+
+    @Autowired
+    private MoocFilmInfoTMapper moocFilmInfoTMapper;
+
+    @Autowired
+    private MoocActorTMapper moocActorTMapper;
+
     @Override
     public List<BannerVo> getBanners() {
         List<MoocBannerT> bannerTS = moocBannerTMapper.selectList(null);
@@ -75,7 +83,23 @@ public class FilmServiceImpl implements  IFilmAPI{
             filmsVo.setFilmInfo(filmInfos);
 
         }else{
-            Page<MoocFilmT> filmTPage = new Page<>(nowPage,nums);
+            Page<MoocFilmT> filmTPage = null;
+            //按照SortId进行排序
+            //排序方式，1-按热门搜索，2-按时间搜索，3-按评价搜索
+            switch(sortId){
+                case 1:
+                    filmTPage = new Page<>(nowPage,nums,"film_box_office");
+                    break;
+                case 2:
+                    filmTPage = new Page<>(nowPage,nums,"film_time");
+                    break;
+                case 3:
+                    filmTPage = new Page<>(nowPage,nums,"film_score");
+                    break;
+                default:
+                    filmTPage = new Page<>(nowPage,nums,"film_box_office");
+                    break;
+            }
             if(sourceId != 99){
                 moocFilmTEntityWrapper.eq("film_source",sourceId);
             }
@@ -94,7 +118,8 @@ public class FilmServiceImpl implements  IFilmAPI{
             }
             int totalCount = moocFilmTMapper.selectCount(moocFilmTEntityWrapper);
             int totalPage = totalCount/nums +1;
-            filmsVo.setFilmNum(totalPage);
+            filmsVo.setTotalPage(totalPage);
+            filmsVo.setNowPage(nowPage);
             filmsVo.setFilmInfo(filmInfos);
         }
         return filmsVo;
@@ -120,14 +145,99 @@ public class FilmServiceImpl implements  IFilmAPI{
             filmsVo.setFilmInfo(filmInfos);
 
         }else{
+            Page<MoocFilmT> filmTPage = null;
+            //按照SortId进行排序
+            //排序方式，1-按热门搜索，2-按时间搜索，3-按评价搜索
+            switch(sortId){
+                case 1:
+                    filmTPage = new Page<>(nowPage,nums,"film_preSaleNum");
+                    break;
+                case 2:
+                    filmTPage = new Page<>(nowPage,nums,"film_time");
+                    break;
+                case 3:
+                    filmTPage = new Page<>(nowPage,nums,"film_preSaleNum");
+                    break;
+                default:
+                    filmTPage = new Page<>(nowPage,nums,"film_preSaleNum");
+                    break;
+            }
 
+            if(sourceId != 99){
+                moocFilmTEntityWrapper.eq("film_source",sourceId);
+            }
+            if(yearId != 99){
+                moocFilmTEntityWrapper.eq("film_date",yearId);
+            }
+            if(catId != 99){
+                String caString  = "%#"+catId+"#%";
+                moocFilmTEntityWrapper.like("film_cats",caString);
+            }
+            List<MoocFilmT> filmTS = moocFilmTMapper.selectPage(filmTPage,moocFilmTEntityWrapper);
+            for(MoocFilmT filmT:filmTS){
+                FilmInfo filmInfo = new FilmInfo();
+                filmInfo = FilmT2FilmInfo.converter(filmT);
+                filmInfos.add(filmInfo);
+            }
+            int totalCount = moocFilmTMapper.selectCount(moocFilmTEntityWrapper);
+            int totalPage = totalCount/nums +1;
+            filmsVo.setTotalPage(totalPage);
+            filmsVo.setNowPage(nowPage);
+            filmsVo.setFilmInfo(filmInfos);
         }
         return filmsVo;
     }
 
     @Override
     public FilmsVo getClassicFilms(int nums, int nowPage, int sortId, int sourceId, int yearId, int catId) {
-        return null;
+        FilmsVo filmsVo = new FilmsVo();
+        List<FilmInfo> filmInfos = new ArrayList<>();
+        //查找所有待上映影片
+        EntityWrapper<MoocFilmT> moocFilmTEntityWrapper = new EntityWrapper<>();
+        moocFilmTEntityWrapper.eq("film_status","3");
+        //是否是首页所需
+
+        Page<MoocFilmT> filmTPage = null;
+        //按照SortId进行排序
+        //排序方式，1-按热门搜索，2-按时间搜索，3-按评价搜索
+        switch(sortId){
+            case 1:
+                filmTPage = new Page<>(nowPage,nums,"film_box_office");
+                break;
+            case 2:
+                filmTPage = new Page<>(nowPage,nums,"film_time");
+                break;
+            case 3:
+                filmTPage = new Page<>(nowPage,nums,"film_score");
+                break;
+            default:
+                filmTPage = new Page<>(nowPage,nums,"film_box_office");
+                break;
+        }
+
+        if(sourceId != 99){
+            moocFilmTEntityWrapper.eq("film_source",sourceId);
+        }
+        if(yearId != 99){
+            moocFilmTEntityWrapper.eq("film_date",yearId);
+        }
+        if(catId != 99){
+            String caString  = "%#"+catId+"#%";
+            moocFilmTEntityWrapper.like("film_cats",caString);
+        }
+        List<MoocFilmT> filmTS = moocFilmTMapper.selectPage(filmTPage,moocFilmTEntityWrapper);
+        for(MoocFilmT filmT:filmTS){
+            FilmInfo filmInfo = new FilmInfo();
+            filmInfo = FilmT2FilmInfo.converter(filmT);
+            filmInfos.add(filmInfo);
+        }
+        int totalCount = moocFilmTMapper.selectCount(moocFilmTEntityWrapper);
+        int totalPage = totalCount/nums +1;
+        filmsVo.setTotalPage(totalPage);
+        filmsVo.setNowPage(nowPage);
+        filmsVo.setFilmInfo(filmInfos);
+
+        return filmsVo;
     }
 
     @Override
@@ -230,5 +340,75 @@ public class FilmServiceImpl implements  IFilmAPI{
             yearVos.add(yearVo);
         }
         return yearVos;
+    }
+
+    public FilmDetailVo getFilmDetail(int searchType, String searchParam){
+        //searchType 1->按照名称查找， 2->按照ID查找
+        if(searchType == 1){
+            searchParam = "%"+searchParam+"%";
+            FilmDetailVo filmDetailVo = moocFilmTMapper.getFilmDetailByName(searchParam);
+            if(filmDetailVo != null){
+                return filmDetailVo;
+            }
+            return null;
+        }else {
+            FilmDetailVo filmDetailVo = moocFilmTMapper.getFilmDetailById(searchParam);
+            return filmDetailVo;
+        }
+    }
+
+    private MoocFilmInfoT getFilmInfo(String filmId){
+        MoocFilmInfoT moocFilmInfoT = new MoocFilmInfoT();
+        moocFilmInfoT.setFilmId(filmId);
+        moocFilmInfoT = moocFilmInfoTMapper.selectOne(moocFilmInfoT);
+        return moocFilmInfoT;
+    }
+
+    @Override
+    public FilmDesVo getFilmDesc(String filmId) {
+        FilmDesVo filmDesVo = new FilmDesVo();
+        MoocFilmInfoT moocFilmInfoT =  getFilmInfo(filmId);
+
+        filmDesVo.setBiography(moocFilmInfoT.getBiography());
+        filmDesVo.setFilmId(filmId);
+
+        return filmDesVo;
+    }
+
+    @Override
+    public ImgVo getImg(String filmId) {
+        ImgVo imgVo = new ImgVo();
+        MoocFilmInfoT moocFilmInfoT =  getFilmInfo(filmId);
+        String filmImgsStr = moocFilmInfoT.getFilmImgs();
+        String[] filmImgs = filmImgsStr.split(",");
+
+        //组装
+        imgVo.setMainImg(filmImgs[0]);
+        imgVo.setImg01(filmImgs[1]);
+        imgVo.setImg02(filmImgs[2]);
+        imgVo.setImg03(filmImgs[3]);
+        imgVo.setImg04(filmImgs[4]);
+
+        return imgVo;
+    }
+
+    @Override
+    public ActorVo getDectInfo(String filmId) {
+        ActorVo actorVo = new ActorVo();
+        MoocFilmInfoT moocFilmInfoT =  getFilmInfo(filmId);
+        Integer directorId =moocFilmInfoT.getDirectorId();
+
+        MoocActorT moocActorT = moocActorTMapper.selectById(directorId);
+
+        actorVo.setImgAddress(moocActorT.getActorImg());
+        actorVo.setDirectorName(moocActorT.getActorName());
+
+        return actorVo;
+    }
+
+    @Override
+    public List<ActorVo> getActors(String filmId) {
+        List<ActorVo> actorVos = moocActorTMapper.getActors(filmId);
+        return actorVos;
     }
 }

@@ -17,6 +17,10 @@ public class FilmsVo implements Serializable {
 
     private static final long serialVersionUID = -6247054555835621468L;
 
+    private int totalPage;
+
+    private int  nowPage;
+
     private int filmNum ;
 
     private List<FilmInfo> filmInfo;

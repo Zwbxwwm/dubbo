@@ -18,6 +18,12 @@ public class ServerResponse<T> {
 
     private String imgPre;
 
+
+
+    private int nowPage;
+
+    private int totalPage;
+
     private T data;
 
     public int getStatus() {
@@ -42,6 +48,22 @@ public class ServerResponse<T> {
 
     public void setImgPre(String imgPre) {
         this.imgPre = imgPre;
+    }
+
+    public int getNowPage() {
+        return nowPage;
+    }
+
+    public void setNowPage(int nowPage) {
+        this.nowPage = nowPage;
+    }
+
+    public int getTotalPage() {
+        return totalPage;
+    }
+
+    public void setTotalPage(int totalPage) {
+        this.totalPage = totalPage;
     }
 
     public T getData() {
@@ -72,6 +94,15 @@ public class ServerResponse<T> {
         this.data = data;
     }
 
+    public ServerResponse(int status, String msg, String imgPre, int nowPage, int totalPage, T data) {
+        this.status = status;
+        this.msg = msg;
+        this.imgPre = imgPre;
+        this.nowPage = nowPage;
+        this.totalPage = totalPage;
+        this.data = data;
+    }
+
     public ServerResponse(int status, String msg, T data){
         this.status = status;
         this.msg = msg;
@@ -89,6 +120,10 @@ public class ServerResponse<T> {
 
     public static <T>ServerResponse<T> success(String imgPre, T data){
         return new ServerResponse(ResponseCode.SUCCESS.getCode(),ResponseCode.SUCCESS.getMsg(),imgPre,data);
+    }
+
+    public static <T>ServerResponse<T> success(String imgPre,int nowPage,int totalPage, T data){
+        return new ServerResponse(ResponseCode.SUCCESS.getCode(),ResponseCode.SUCCESS.getMsg(),imgPre,nowPage,totalPage,data);
     }
 
     public static <T>ServerResponse<T> success(T data){
