@@ -349,8 +349,9 @@ public class FilmServiceImpl implements  IFilmAPI{
             FilmDetailVo filmDetailVo = moocFilmTMapper.getFilmDetailByName(searchParam);
             if(filmDetailVo != null){
                 return filmDetailVo;
+            }else {
+                throw new NullPointerException("未找到影片");
             }
-            return null;
         }else {
             FilmDetailVo filmDetailVo = moocFilmTMapper.getFilmDetailById(searchParam);
             return filmDetailVo;
