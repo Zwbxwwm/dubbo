@@ -31,7 +31,7 @@ import java.util.concurrent.Future;
 @RequestMapping("/film")
 public class filmController {
 
-    @Reference(interfaceClass = IFilmAPI.class)
+    @Reference(interfaceClass = IFilmAPI.class,check = false)
     private IFilmAPI iFilmAPI;
 
     @Reference(interfaceClass = IFilmAsyncAPI.class,async = true)
