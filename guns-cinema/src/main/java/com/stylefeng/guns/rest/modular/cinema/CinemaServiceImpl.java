@@ -8,13 +8,20 @@ import com.stylefeng.guns.API.Vo.*;
 import com.stylefeng.guns.API.Vo.ApiVo.CinemaVo;
 import com.stylefeng.guns.API.cinema.ICinemaAPI;
 import com.stylefeng.guns.API.from.CinemaFom;
+import com.stylefeng.guns.rest.common.*;
+import com.stylefeng.guns.rest.common.MoocAreaDictTMapper;
 import com.stylefeng.guns.rest.common.MoocBrandDictTMapper;
 import com.stylefeng.guns.rest.common.MoocCinemaTMapper;
 import com.stylefeng.guns.rest.common.MoocFieldTMapper;
+import com.stylefeng.guns.rest.common.MoocHallDictTMapper;
+import com.stylefeng.guns.rest.common.converter.MoocAreaDictT2CinemaAreaVo;
 import com.stylefeng.guns.rest.common.converter.MoocBrandDictT2CinemaBrandVo;
 import com.stylefeng.guns.rest.common.converter.MoocCinemaT2CinemaVo;
+import com.stylefeng.guns.rest.common.converter.MoocHallDictT2CinemaHallTypeVo;
+import com.stylefeng.guns.rest.common.persistence.model.MoocAreaDictT;
 import com.stylefeng.guns.rest.common.persistence.model.MoocBrandDictT;
 import com.stylefeng.guns.rest.common.persistence.model.MoocCinemaT;
+import com.stylefeng.guns.rest.common.persistence.model.MoocHallDictT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +49,12 @@ public class CinemaServiceImpl implements ICinemaAPI {
 
     @Autowired
     private MoocBrandDictTMapper moocBrandDictTMapper;
+
+    @Autowired
+    private MoocAreaDictTMapper moocAreaDictTMapper;
+
+    @Autowired
+    private MoocHallDictTMapper moocHallDictTMapper;
 
     @Override
     public Page<CinemaVo> getCinemas(CinemaFom cinemaFom) {
@@ -107,17 +120,67 @@ public class CinemaServiceImpl implements ICinemaAPI {
             }
             cinemaBrandVos.add(cinemaBrandVo);
         }
-        return null;
+        return cinemaBrandVos;
     }
 
     @Override
     public List<CinemaAreaVo> getAreas(int areaId) {
-        return null;
+        //创建返回的对象
+        List<CinemaAreaVo> cinemaAreaVos = new ArrayList<>();
+
+        //根据在数据库中查找数据，检验该分类在数据库中是否存在
+        MoocAreaDictT moocAreaDictT =moocAreaDictTMapper.selectById(areaId);
+
+        List<MoocAreaDictT> areaDictTS = moocAreaDictTMapper.selectList(null);
+
+        boolean flag = true;
+        if(areaId == 99 || moocAreaDictT == null ){
+            flag = false;
+        }
+
+        for(MoocAreaDictT moocArea : areaDictTS){
+            CinemaAreaVo cinemaAreaVo = new CinemaAreaVo();
+            cinemaAreaVo = MoocAreaDictT2CinemaAreaVo.converter(moocArea);
+            if(flag){
+                if(moocArea.getUuid() == areaId){
+                    cinemaAreaVo.setActive(true);
+                }
+            }else {
+                cinemaAreaVo.setActive(true);
+            }
+            cinemaAreaVos.add(cinemaAreaVo);
+        }
+        return cinemaAreaVos;
     }
 
     @Override
     public List<CinemaHallTypeVo> getHallType(int hallTypes) {
-        return null;
+        //创建返回的对象
+        List<CinemaHallTypeVo> cinemaHallTypeVos = new ArrayList<>();
+
+        //根据在数据库中查找数据，检验该分类在数据库中是否存在
+        MoocHallDictT moocHallDictT =moocHallDictTMapper.selectById(hallTypes);
+
+        List<MoocHallDictT> hallDictTS = moocHallDictTMapper.selectList(null);
+
+        boolean flag = true;
+        if(hallTypes == 99 || moocHallDictT == null ){
+            flag = false;
+        }
+
+        for(MoocHallDictT moocHall : hallDictTS){
+            CinemaHallTypeVo cinemaHallTypeVo = new CinemaHallTypeVo();
+            cinemaHallTypeVo = MoocHallDictT2CinemaHallTypeVo.converter(moocHall);
+            if(flag){
+                if(moocHall.getUuid() == hallTypes){
+                    cinemaHallTypeVo.setActive(true);
+                }
+            }else {
+                cinemaHallTypeVo.setActive(true);
+            }
+            cinemaHallTypeVos.add(cinemaHallTypeVo);
+        }
+        return cinemaHallTypeVos;
     }
 
     @Override

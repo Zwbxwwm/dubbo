@@ -15,6 +15,7 @@ public class MoocBrandDictT2CinemaBrandVo {
     public static CinemaBrandVo converter(MoocBrandDictT moocBrandDictT){
         CinemaBrandVo cinemaBrandVo = new CinemaBrandVo();
         cinemaBrandVo.setBrandName(moocBrandDictT.getShowName());
+        cinemaBrandVo.setBrandId(moocBrandDictT.getUuid()+"");
         return cinemaBrandVo;
     }
 
