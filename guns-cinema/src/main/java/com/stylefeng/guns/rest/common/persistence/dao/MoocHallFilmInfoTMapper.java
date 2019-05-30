@@ -1,7 +1,10 @@
-package com.stylefeng.guns.rest.common..persistence.dao;
+package com.stylefeng.guns.rest.common.persistence.dao;
+
 
 import com.stylefeng.guns.rest.common.persistence.model.MoocHallFilmInfoT;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>

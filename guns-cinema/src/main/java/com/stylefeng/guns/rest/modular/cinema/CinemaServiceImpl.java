@@ -3,21 +3,12 @@ package com.stylefeng.guns.rest.modular.cinema;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.stylefeng.guns.API.User.IUserAPI;
 import com.stylefeng.guns.API.Vo.*;
 import com.stylefeng.guns.API.Vo.ApiVo.CinemaVo;
 import com.stylefeng.guns.API.cinema.ICinemaAPI;
 import com.stylefeng.guns.API.from.CinemaFom;
-import com.stylefeng.guns.rest.common.*;
-import com.stylefeng.guns.rest.common.MoocAreaDictTMapper;
-import com.stylefeng.guns.rest.common.MoocBrandDictTMapper;
-import com.stylefeng.guns.rest.common.MoocCinemaTMapper;
-import com.stylefeng.guns.rest.common.MoocFieldTMapper;
-import com.stylefeng.guns.rest.common.MoocHallDictTMapper;
-import com.stylefeng.guns.rest.common.converter.MoocAreaDictT2CinemaAreaVo;
-import com.stylefeng.guns.rest.common.converter.MoocBrandDictT2CinemaBrandVo;
-import com.stylefeng.guns.rest.common.converter.MoocCinemaT2CinemaVo;
-import com.stylefeng.guns.rest.common.converter.MoocHallDictT2CinemaHallTypeVo;
+import com.stylefeng.guns.rest.common.converter.*;
+import com.stylefeng.guns.rest.common.persistence.dao.*;
 import com.stylefeng.guns.rest.common.persistence.model.MoocAreaDictT;
 import com.stylefeng.guns.rest.common.persistence.model.MoocBrandDictT;
 import com.stylefeng.guns.rest.common.persistence.model.MoocCinemaT;
@@ -25,7 +16,7 @@ import com.stylefeng.guns.rest.common.persistence.model.MoocHallDictT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.xml.ws.spi.WebServiceFeatureAnnotation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -185,9 +176,15 @@ public class CinemaServiceImpl implements ICinemaAPI {
 
     @Override
     public CinemaInfoVo getCinemaInfoById(int cinemaId) {
-        return null;
+
+        MoocCinemaT moocCinemaT = moocCinemaTMapper.selectById(cinemaId);
+
+        CinemaInfoVo cinemaInfoVo = MoocCinemaT2CinemaInfoVo.converter(moocCinemaT);
+        return cinemaInfoVo;
     }
 
+
+    //根据cinemaId 获取对应影片信息和播放场次
     @Override
     public CinemaFilmInfoVo getCinemaFilmInfo(int cinemaId) {
         return null;
